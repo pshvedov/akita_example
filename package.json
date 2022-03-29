@@ -1,12 +1,18 @@
 {
   "name": "todo-list",
+  "url": "http://",
   "version": "0.1.2",
   "license": "MIT",
+  "author": "Maryucha M. Mariani",
+  "description": "This app is a  Todo List for my pratics in Angular",
+  "repository": "https://github.com/Maryucha/TodoAngular",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development"
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "compodoc": "npx compodoc -p tsconfig.doc.json -a screenshots -n \"Todo Angular Documentation\" --includes additional-doc --theme postmark"
   },
   "private": true,
   "dependencies": {
@@ -21,8 +27,6 @@
     "@angular/platform-browser-dynamic": "~13.2.0",
     "@angular/router": "~13.2.0",
     "@compodoc/compodoc": "^1.1.19",
-    "@datorama/akita": "^7.1.1",
-    "@datorama/akita-ngdevtools": "^7.0.0",
     "bulma": "^0.9.3",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
