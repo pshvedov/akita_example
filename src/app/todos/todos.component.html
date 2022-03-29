@@ -1,5 +1,5 @@
 <section class="heading-section">
-    <h1 class="title is-1 has-text-centered">Todo list {{ isLoading$ | async }}</h1>
+    <h1 class="title is-1 has-text-centered">Todo list</h1>
 </section>
 
 <div class="container">
@@ -30,7 +30,7 @@
 <section class="section">
     <div class="container">
         <div class="todo-list">
-            <app-todo-item *ngFor="let todo of list$ | async" [todo]="todo" (todoClicked)="toggleCompleted(todo)"
+            <app-todo-item *ngFor="let todo of list" [todo]="todo" (todoClicked)="toggleCompleted(todo.id,todo)"
                            (editClicked)="editTodo(todo)" (removeClicked)="deleteTodo(todo.id)"></app-todo-item>
         </div>
     </div>

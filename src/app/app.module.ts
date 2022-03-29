@@ -9,8 +9,6 @@ import { TodoItemComponent } from './todo-item/todo-item.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditModalComponent } from './edit-modal/edit-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { environment } from '../environments/environment';
-import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 
 @NgModule({
   declarations: [
@@ -21,13 +19,12 @@ import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    AppRoutingModule, 
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatDialogModule,
-    environment.production ? [] : AkitaNgDevtools.forRoot()
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

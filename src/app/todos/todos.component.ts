@@ -1,29 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs/internal/Observable';
 import { EditModalComponent } from '../edit-modal/edit-modal.component';
 import { DataService } from '../shared/data.service';
 import { Todo } from '../shared/todo.model';
-import { TodoQuery } from '../store/todo.query';
-import { TodoStore } from '../store/todo.store';
 
+/**
+ * This class represents todo components
+ */
 @Component({
   selector: 'app-todos',
   templateUrl: './todos.component.html',
-  styleUrls: ['./todos.component.scss'],
-
+  styleUrls: ['./todos.component.scss']
 })
 export class TodosComponent implements OnInit {
   public formTodo!: FormGroup;
-  public list$ = this.todoQuery.todos$;
-  public isLoading$ = this.todoQuery.isLoading$;
+  public todoList: Observable<Array<Todo>>;
+  public list: Todo[] = [];
 
   constructor(
     private todoService: DataService,
     private formBuilder: FormBuilder,
-    private dialog: MatDialog,
-    private todoStore: TodoStore,
-    private todoQuery: TodoQuery,
+    private dialog: MatDialog
   ) {}
 
   public async ngOnInit(): Promise<void> {
@@ -33,10 +32,21 @@ export class TodosComponent implements OnInit {
       completedControl: new FormControl(),
       updateControl: new FormControl(),
     });
+
+    this.todoList = this.todoService.getAllTodos();
+    this.sortList();
   }
 
-  public toggleCompleted(todo: Todo): void {
-    this.todoStore.toggleTodo(todo);
+  public toggleCompleted(id: string, todo: Todo): void {
+    todo.completed = !todo.completed;
+    this.todoService.getOne(id).subscribe((a) => {
+      todo =  a;
+      todo.completed = !a.completed;
+      todo.text = a.text;
+      this.todoService.updateTodo(id, todo).subscribe(() => {
+        this.sortList();
+      });
+    });
   }
 
   public addTodo(): void {
@@ -44,8 +54,12 @@ export class TodosComponent implements OnInit {
       text: this.formTodo.get('textControl')?.value,
       completed: false,
     }
-    this.todoStore.addTodo(todoCreate);
-    this.formTodo.reset();
+    if (this.formTodo.valid) {
+      this.todoService.addTodo(todoCreate).subscribe(() => {
+        this.sortList();
+      });
+      this.formTodo.reset();
+    }
   }
 
   public editTodo(todo: Todo): void {
@@ -53,12 +67,31 @@ export class TodosComponent implements OnInit {
       height: '200px', width: '600px',
       data: todo
     })
-    dialogRef.afterClosed().subscribe((edited) => {
-      this.todoStore.editTodo(edited);
+    dialogRef.afterClosed().subscribe((a) => {
+      todo = a;
+      this.todoService.updateTodo(a.id, todo).subscribe(() => {
+        this.sortList();
+      });
     });
   }
 
   public deleteTodo(id: string) {
-    this.todoStore.deleteTodo(id);
+    this.todoService.getOne(id).subscribe(() => {
+      this.todoService.deleteTodo(id).subscribe(() => {
+        this.sortList();
+      });
+    });
+  }
+
+  /**
+  * This method sorted list for completed param
+  */
+  public sortList() {
+    this.todoList?.subscribe((a) => {
+      this.list = a;
+      this.list.sort(function (x, y) {
+        return (Number(x?.completed) - Number(y?.completed));
+      });
+    })
   }
 }
