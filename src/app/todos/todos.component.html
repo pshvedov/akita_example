@@ -1,0 +1,37 @@
+<section class="heading-section">
+    <h1 class="title is-1 has-text-centered">Todo list {{ isLoading$ | async }}</h1>
+</section>
+
+<div class="container">
+    <div class="add-todo-box">
+        <form [formGroup]="formTodo">
+            <h2 class="title is-5">New todo</h2>
+            <div class="field is-grouped my-0">
+                <p class="control is-expanded">
+                    <input class="input" name="text" formControlName="textControl" type="text" placeholder="Todo text"
+                        required>
+                </p>
+                <p class="control">
+                    <button class="button alt-gradient-button" type="submit" [disabled]="!formTodo.valid"
+                        (click)="addTodo()">
+                        <i class="material-icons">add</i>
+                        New
+                    </button>
+                </p>
+            </div>
+            <div *ngIf="formTodo.valid">
+                <p class="help is-danger" *ngIf="!! formTodo.get('textControl')?.errors?.['required']">Todo text required.</p>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div class="todo-list">
+            <app-todo-item *ngFor="let todo of list$ | async" [todo]="todo" (todoClicked)="toggleCompleted(todo)"
+                           (editClicked)="editTodo(todo)" (removeClicked)="deleteTodo(todo.id)"></app-todo-item>
+        </div>
+    </div>
+</section>
